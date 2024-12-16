@@ -9,15 +9,15 @@ import pickle
 from sklearn.metrics import mean_squared_error, r2_score
 
 try:
-    import plotly
     import plotly.express as px
     import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
 except ImportError:
     import pip
     pip.main(['install', 'plotly'])
-    import plotly
     import plotly.express as px
     import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
 # Load the data
 
 def load_data():
