@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-
-import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
@@ -11,11 +9,15 @@ import pickle
 from sklearn.metrics import mean_squared_error, r2_score
 
 try:
+    import plotly
     import plotly.express as px
+    import plotly.graph_objects as go
 except ImportError:
     import pip
     pip.main(['install', 'plotly'])
+    import plotly
     import plotly.express as px
+    import plotly.graph_objects as go
 # Load the data
 
 def load_data():
