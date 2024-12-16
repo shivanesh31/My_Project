@@ -1,47 +1,13 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-try:
-    import plotly.express as px
-    import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
-except ImportError:
-    st.error("Error loading plotly. Installing required packages...")
-    import pip
-    pip.main(['install', 'plotly'])
-    import plotly.express as px
-    import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
-
-try:
-    from sklearn.preprocessing import LabelEncoder
-    from sklearn.model_selection import train_test_split
-except ImportError:
-    st.error("Error loading scikit-learn. Installing required packages...")
-    import pip
-    pip.main(['install', 'scikit-learn'])
-    from sklearn.preprocessing import LabelEncoder
-    from sklearn.model_selection import train_test_split
-
-try:
-    import xgboost as xgb
-except ImportError:
-    st.error("Error loading xgboost. Installing required packages...")
-    import pip
-    pip.main(['install', 'xgboost'])
-    import xgboost as xgb
-
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+import xgboost as xgb
 import pickle
-
-def load_data():
-    """Load the rental dataset"""
-    try:
-        df = pd.read_csv("data/cleaned_KL_data.csv")
-        st.sidebar.success("Data loaded successfully!")
-        return df
-    except Exception as e:
-        st.error(f"Error loading data: {str(e)}")
-        st.stop()
 
 def predict_price(features, xgb_model, encoders):
     """Make rental price prediction using saved XGBoost model
