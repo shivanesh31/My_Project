@@ -1116,8 +1116,8 @@ def load_all_models():
             xgb_artifacts = pickle.load(file)
         
         # Load Random Forest model
-        with open('models/tuned_rf_model.pkl', 'rb') as file:
-            rf_artifacts = pickle.load(file)
+        #with open('models/tuned_rf_model.pkl', 'rb') as file:
+            #rf_artifacts = pickle.load(file)
         
         # Load Linear Regression model
         with open('models/tuned_lr_model.pkl', 'rb') as file:
@@ -1127,10 +1127,7 @@ def load_all_models():
             'xgboost': {
                 'model': xgb_artifacts['model'],
                 'encoders': xgb_artifacts['encoders']
-            },
-            'random_forest': {
-                'model': rf_artifacts['model'],
-                'encoders': rf_artifacts['encoders']
+            
             },
             'linear_regression': {
                 'model': lr_artifacts['model'],
