@@ -1,14 +1,3 @@
-import subprocess
-import sys
-
-def install_packages():
-    packages = ['plotly']
-    for package in packages:
-        subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
-
-install_packages()
-
-# Now your regular imports
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -20,6 +9,16 @@ from sklearn.model_selection import train_test_split
 import xgboost as xgb
 import pickle
 
+def load_data():
+    """Load the rental dataset"""
+    try:
+        df = pd.read_csv("data/cleaned_KL_data.csv")
+        st.sidebar.success("Data loaded successfully!")
+        return df
+    except Exception as e:
+        st.error(f"Error loading data: {str(e)}")
+        st.stop()
+        
 def predict_price(features, xgb_model, encoders):
     """Make rental price prediction using saved XGBoost model
     
