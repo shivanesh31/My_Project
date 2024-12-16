@@ -10,7 +10,7 @@ except ImportError as e:
 def load_data():
     """Load the rental dataset"""
     try:
-        df = pd.read_csv("data/cleaned_KL_data.csv")
+        df = pd.read_csv(cleaned_KL_data.csv)
         st.sidebar.success("Data loaded successfully!")
         return df
     except Exception as e:
