@@ -1,23 +1,37 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split
-import xgboost as xgb
-import pickle
-from sklearn.metrics import mean_squared_error, r2_score
-
 try:
     import plotly.express as px
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
 except ImportError:
+    st.error("Error loading plotly. Installing required packages...")
     import pip
     pip.main(['install', 'plotly'])
     import plotly.express as px
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
-# Load the data
+
+try:
+    from sklearn.preprocessing import LabelEncoder
+    from sklearn.model_selection import train_test_split
+except ImportError:
+    st.error("Error loading scikit-learn. Installing required packages...")
+    import pip
+    pip.main(['install', 'scikit-learn'])
+    from sklearn.preprocessing import LabelEncoder
+    from sklearn.model_selection import train_test_split
+
+try:
+    import xgboost as xgb
+except ImportError:
+    st.error("Error loading xgboost. Installing required packages...")
+    import pip
+    pip.main(['install', 'xgboost'])
+    import xgboost as xgb
+
+import pickle
 
 def load_data():
     """Load the rental dataset"""
