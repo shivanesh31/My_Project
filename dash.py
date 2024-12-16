@@ -1,3 +1,14 @@
+import subprocess
+import sys
+
+def install_packages():
+    packages = ['plotly']
+    for package in packages:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
+
+install_packages()
+
+# Now your regular imports
 import streamlit as st
 import pandas as pd
 import numpy as np
