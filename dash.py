@@ -1,11 +1,11 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
-
-st.title("Testing Package Installation")
-st.write("If you can see this, basic packages are working!")
-
+try:
+    from sklearn.preprocessing import LabelEncoder
+    st.success("scikit-learn loaded successfully!")
+except ImportError as e:
+    st.error(f"Failed to load scikit-learn: {str(e)}")
 
 def load_data():
     """Load the rental dataset"""
