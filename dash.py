@@ -1107,7 +1107,7 @@ def load_all_models():
     """Load all three saved models and their artifacts"""
     try:
         # Load XGBoost model
-        with open('models/tuned_xgboost_model.pkl', 'rb') as file:
+        with open(tuned_xgboost_model.pkl, 'rb') as file:
             xgb_artifacts = pickle.load(file)
         
         # Load Random Forest model
@@ -1115,7 +1115,7 @@ def load_all_models():
             #rf_artifacts = pickle.load(file)
         
         # Load Linear Regression model
-        with open('models/tuned_lr_model.pkl', 'rb') as file:
+        with open(tuned_lr_model.pkl, 'rb') as file:
             lr_artifacts = pickle.load(file)
         
         return {
