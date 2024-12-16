@@ -1,14 +1,16 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+#import plotly.express as px
+#import plotly.graph_objects as go
+#from plotly.subplots import make_subplots
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 import xgboost as xgb
 import pickle
 
+# Add this line to test if requirements are being installed
+st.write("Packages loaded successfully")
 def load_data():
     """Load the rental dataset"""
     try:
