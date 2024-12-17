@@ -1,22 +1,19 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import pickle
-try:
-    import plotly.express as px
-    import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
-except ImportError:
-    st.error("Error importing plotly. Please check if it's installed correctly.")
-    import subprocess
-    subprocess.check_call(["pip", "install", "plotly"])
-    import plotly.express as px
-    import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
 
-import streamlit as st
-import pandas as pd
-import numpy as np
+# Add version checks
+try:
+    import numpy as np
+    st.write(f"NumPy version: {np.__version__}")
+    
+    import pandas as pd
+    st.write(f"Pandas version: {pd.__version__}")
+    
+    from sklearn.preprocessing import LabelEncoder
+    import sklearn
+    st.write(f"Scikit-learn version: {sklearn.__version__}")
+    
+except Exception as e:
+    st.error(f"Import error: {str(e)}")
 try:
     from sklearn.preprocessing import LabelEncoder
 except ImportError:
