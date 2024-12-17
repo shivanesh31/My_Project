@@ -10,7 +10,7 @@ except ImportError as e:
 def load_data():
     """Load the rental dataset"""
     try:
-        df = pd.read_csv(cleaned_KL_data.csv)
+        df = pd.read_csv("Data/cleaned_KL_data.csv")
         st.sidebar.success("Data loaded successfully!")
         return df
     except Exception as e:
@@ -1107,15 +1107,11 @@ def load_all_models():
     """Load all three saved models and their artifacts"""
     try:
         # Load XGBoost model
-        with open(tuned_xgboost_model.pkl, 'rb') as file:
+        with open('Model/tuned_xgboost_model.pkl', 'rb') as file:
             xgb_artifacts = pickle.load(file)
         
-        # Load Random Forest model
-        #with open('models/tuned_rf_model.pkl', 'rb') as file:
-            #rf_artifacts = pickle.load(file)
-        
         # Load Linear Regression model
-        with open(tuned_lr_model.pkl, 'rb') as file:
+        with open('Model/tuned_lr_model.pkl', 'rb') as file:
             lr_artifacts = pickle.load(file)
         
         return {
