@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import sys 
 try:
     st.write("Attempting to import scikit-learn...")
     from sklearn.model_selection import train_test_split
