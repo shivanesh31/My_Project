@@ -1270,7 +1270,7 @@ def load_all_models():
     """Load all three saved models and their artifacts"""
     try:
         # Load XGBoost model
-        with open('Model/tuned_xgboost_model.pkl', 'rb') as file:
+        with open('model/tuned_xgboost_model.pkl', 'rb') as file:
             xgb_artifacts = pickle.load(file)
         
         return {
