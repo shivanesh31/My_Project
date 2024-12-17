@@ -1177,17 +1177,17 @@ def add_model_comparison():
         'XGBoost': {
             'MAE': 288.44,  # Replace with your actual MAE
             'RMSE': 402.21, # Replace with your actual RMSE
-            'R2': 0.77     # Replace with your actual R2
+            'R2': 0.7367    # Replace with your actual R2
         },
         'Random Forest': {
             'MAE': 295.95,  # Replace with your actual MAE
             'RMSE': 421.41, # Replace with your actual RMSE
-            'R2': 0.73     # Replace with your actual R2
+            'R2': 0.7275     # Replace with your actual R2
         },
         'Linear Regression': {
             'MAE': 425.32,  # Replace with your actual MAE
             'RMSE': 589.67, # Replace with your actual RMSE
-            'R2': 0.44     # Replace with your actual R2
+            'R2': 0.4782    # Replace with your actual R2
         }
     }
     
