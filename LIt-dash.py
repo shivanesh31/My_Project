@@ -14,7 +14,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 def load_data():
     """Load the rental dataset"""
     try:
-        df = pd.read_csv(r"C:\Users\User\Downloads\cleaned_KL_data.csv")
+        df = pd.read_csv('Data//cleaned_KL_data.csv')
         st.sidebar.success("Data loaded successfully!")
         return df
     except Exception as e:
@@ -1107,44 +1107,10 @@ def add_rental_suggestions(df):
             else:
                 st.info("Try broadening your search criteria to see more options.")
 
-def load_all_models():
-    """Load all three saved models and their artifacts"""
-    try:
-        # Load XGBoost model
-        with open(r'C:\Users\User\.jupyter\Dash31\tuned_xgboost_model.pkl', 'rb') as file:
-            xgb_artifacts = pickle.load(file)
-        
-        # Load Random Forest model
-        with open(r'C:\Users\User\.jupyter\Dash31\tuned_rf_model.pkl', 'rb') as file:
-            rf_artifacts = pickle.load(file)
-        
-        # Load Linear Regression model
-        with open(r'C:\Users\User\.jupyter\Dash31\tuned_lr_model.pkl', 'rb') as file:
-            lr_artifacts = pickle.load(file)
-        
-        return {
-            'xgboost': {
-                'model': xgb_artifacts['model'],
-                'encoders': xgb_artifacts['encoders']
-            },
-            'random_forest': {
-                'model': rf_artifacts['model'],
-                'encoders': rf_artifacts['encoders']
-            },
-            'linear_regression': {
-                'model': lr_artifacts['model'],
-                'encoders': lr_artifacts['encoders'],
-                'scaler': lr_artifacts['scaler']
-            }
-        }
-    except Exception as e:
-        st.error(f"Error loading models: {str(e)}")
-        return None
-
 def load_default_dataset():
     """Load the default KL dataset and train model"""
     try:
-        df = pd.read_csv(r"C:\Users\User\Downloads\cleaned_KL_data.csv")
+        df = pd.read_csv(r"Data/cleaned_KL_data.csv")
         
         # Train model for default dataset
         encoders = {
