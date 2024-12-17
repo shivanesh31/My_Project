@@ -1,24 +1,19 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-import xgboost as xgb
-import pickle
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import os
 try:
+    st.write("Attempting to import scikit-learn...")
+    from sklearn.model_selection import train_test_split
     from sklearn.preprocessing import LabelEncoder
-    st.write("sklearn loaded successfully")
-except ImportError as e:
-    st.error(f"sklearn import error: {str(e)}")
-    try:
-        import pip
-        pip.main(['install', 'scikit-learn'])
-        from sklearn.preprocessing import LabelEncoder
-    except Exception as e:
-        st.error(f"Failed to install sklearn: {str(e)}")
+    st.write("scikit-learn imported successfully!")
+except Exception as e:
+    st.error(f"Error importing scikit-learn: {str(e)}")
+    st.write("Python version:", sys.version)
+    st.write("Installed packages:")
+    import pkg_resources
+    installed_packages = [f"{dist.key} {dist.version}" for dist in pkg_resources.working_set]
+    st.write(installed_packages)
+
 def load_data():
     """Load the rental dataset"""
     try:
