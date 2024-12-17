@@ -1168,6 +1168,10 @@ def load_default_dataset():
 def load_default_dataset():
     """Load the default KL dataset and train model"""
     try:
+        # First ensure LabelEncoder is available
+        if 'LabelEncoder' not in globals():
+            from sklearn.preprocessing import LabelEncoder
+            
         df = pd.read_csv("Data/cleaned_KL_data.csv")
         
         # Train model for default dataset
@@ -1184,45 +1188,14 @@ def load_default_dataset():
         for column, encoder in encoders.items():
             model_df[f'{column}_encoded'] = encoder.fit_transform(model_df[column])
         
-        # Select features
-        feature_list = [
-            'size',
-            'rooms',
-            'bathroom',
-            'parking',
-            'additional_near_ktm/lrt',
-            'location_encoded',
-            'property_type_encoded',
-            'furnished_encoded'
-        ]
-        
-        X = model_df[feature_list]
-        y = model_df['monthly_rent']
-        
-        # Train model
-        xgb_model = xgb.XGBRegressor(
-            max_depth=6,
-            learning_rate=0.1,
-            n_estimators=200,
-            min_child_weight=3,
-            subsample=0.8,
-            colsample_bytree=0.8,
-            random_state=42
-        )
-        
-        xgb_model.fit(X, y)
-        
-        # Store model artifacts
-        st.session_state['model_artifacts'] = {
-            'model': xgb_model,
-            'encoders': encoders,
-            'feature_list': feature_list
-        }
-        
         return df
         
     except Exception as e:
         st.error(f"Error loading default dataset: {str(e)}")
+        st.write("Debug information:")
+        import os
+        st.write("Current directory:", os.getcwd())
+        st.write("Available files:", os.listdir())
         return None
 
 def add_model_comparison():
