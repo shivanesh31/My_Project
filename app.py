@@ -17,15 +17,26 @@ except ImportError:
 def load_data():
     """Load the rental dataset"""
     try:
-        df = pd.read_csv("Data/cleaned_KL_data.csv")
+        # First try the direct path
+        if os.path.exists("Data/cleaned_KL_data.csv"):
+            df = pd.read_csv("Data/cleaned_KL_data.csv")
+        # Try alternate path if first fails
+        elif os.path.exists("cleaned_KL_data.csv"):
+            df = pd.read_csv("cleaned_KL_data.csv")
+        else:
+            st.error("Could not find data file")
+            st.write("Current directory:", os.getcwd())
+            st.write("Available files:", os.listdir())
+            return None
+            
         st.sidebar.success("Data loaded successfully!")
         return df
+        
     except Exception as e:
         st.error(f"Error loading data: {str(e)}")
-        import os
         st.write("Current directory:", os.getcwd())
         st.write("Available files:", os.listdir())
-        st.stop()
+        return None
         
 def predict_price(features, xgb_model, encoders):
     """Make rental price prediction using saved XGBoost model
