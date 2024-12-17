@@ -1,5 +1,18 @@
-! pip install requirement.txt
+import streamlit as st
+import pandas as pd
+import numpy as np
 
+try:
+    import plotly.express as px
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+except ImportError:
+    st.error("Error importing plotly. Please check if it's installed correctly.")
+    import subprocess
+    subprocess.check_call(["pip", "install", "plotly"])
+    import plotly.express as px
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
 
 def load_data():
     """Load the rental dataset"""
