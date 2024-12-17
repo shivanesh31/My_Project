@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-
+import pickle
 try:
     import plotly.express as px
     import plotly.graph_objects as go
@@ -1157,7 +1157,7 @@ def load_all_models():
 def load_default_dataset():
     """Load the default KL dataset and train model"""
     try:
-        df = pd.read_csv(r"C:\Users\User\Downloads\cleaned_KL_data.csv")
+        df = pd.read_csv("Data/cleaned_KL_data.csv")
         
         # Train model for default dataset
         encoders = {
