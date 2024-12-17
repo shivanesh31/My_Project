@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import sys 
+st.write("Starting package imports...")
+st.write("Python version:", sys.version)
+
 try:
     st.write("Attempting to import scikit-learn...")
     from sklearn.model_selection import train_test_split
@@ -9,12 +12,6 @@ try:
     st.write("scikit-learn imported successfully!")
 except Exception as e:
     st.error(f"Error importing scikit-learn: {str(e)}")
-    st.write("Python version:", sys.version)
-    st.write("Installed packages:")
-    import pkg_resources
-    installed_packages = [f"{dist.key} {dist.version}" for dist in pkg_resources.working_set]
-    st.write(installed_packages)
-
 def load_data():
     """Load the rental dataset"""
     try:
