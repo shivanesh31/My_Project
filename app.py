@@ -1129,37 +1129,28 @@ def load_all_models():
     try:
         st.write("Starting model loading...")
         
-        # Try importing required packages first
-        try:
-            import numpy as np
-            import pickle5 as pickle  # Use pickle5 instead
-            st.write("Required packages imported successfully")
-        except ImportError:
-            try:
-                import pickle  # Fallback to regular pickle
-                st.write("Using standard pickle")
-            except Exception as e:
-                st.error(f"Pickle import error: {str(e)}")
-                return None
+        # Check if model files exist
+        import os
+        if not os.path.exists('Model/tuned_xgboost_model.pkl'):
+            st.error("XGBoost model file not found")
+            return None
+            
+        if not os.path.exists('Model/tuned_lr_model.pkl'):
+            st.error("Linear Regression model file not found")
+            return None
 
+        # Load models with explicit numpy import
+        import numpy as np
+        import pickle
+        
         # Load XGBoost model
-        try:
-            with open('Model/tuned_xgboost_model.pkl', 'rb') as file:
-                xgb_artifacts = pickle.load(file)
-                st.write("XGBoost model loaded")
-        except Exception as e:
-            st.error(f"Error loading XGBoost model: {str(e)}")
-            return None
-
+        with open('Model/tuned_xgboost_model.pkl', 'rb') as file:
+            xgb_artifacts = pickle.load(file)
+            
         # Load Linear Regression model
-        try:
-            with open('Model/tuned_lr_model.pkl', 'rb') as file:
-                lr_artifacts = pickle.load(file)
-                st.write("Linear Regression model loaded")
-        except Exception as e:
-            st.error(f"Error loading Linear Regression model: {str(e)}")
-            return None
-
+        with open('Model/tuned_lr_model.pkl', 'rb') as file:
+            lr_artifacts = pickle.load(file)
+        
         return {
             'xgboost': {
                 'model': xgb_artifacts['model'],
@@ -1176,12 +1167,9 @@ def load_all_models():
         import os
         st.write("Debug information:")
         st.write("Current directory:", os.getcwd())
-        try:
-            st.write("Available files:", os.listdir('Model'))
-        except:
-            st.write("Could not access Model directory")
+        st.write("Available files:", os.listdir())
         return None
-        
+
 def load_default_dataset():
     """Load the default KL dataset and train model"""
     try:
