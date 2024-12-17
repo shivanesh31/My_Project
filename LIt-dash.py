@@ -1289,12 +1289,6 @@ def main():
         
         
         # Load model and encoders
-        models = load_all_models()
-        if models is None:
-            st.error("Failed to load models")
-            return
-        
-        
         # Calculate location statistics for predictions
         location_stats = calculate_location_stats(df)
         
