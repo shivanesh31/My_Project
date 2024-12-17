@@ -14,6 +14,17 @@ except ImportError:
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
 
+import streamlit as st
+import pandas as pd
+import numpy as np
+try:
+    from sklearn.preprocessing import LabelEncoder
+except ImportError:
+    st.error("Failed to import sklearn. Installing...")
+    import pip
+    pip.main(['install', 'scikit-learn==1.0.2'])
+    from sklearn.preprocessing import LabelEncoder
+
 def load_data():
     """Load the rental dataset"""
     try:
@@ -1124,48 +1135,35 @@ def add_rental_suggestions(df):
             else:
                 st.info("Try broadening your search criteria to see more options.")
 
-def load_all_models():
-    """Load all three saved models and their artifacts"""
+def load_default_dataset():
+    """Load the default KL dataset and train model"""
     try:
-        st.write("Starting model loading...")
-        
-        # Check if model files exist
-        import os
-        if not os.path.exists('Model/tuned_xgboost_model.pkl'):
-            st.error("XGBoost model file not found")
-            return None
+        # First ensure LabelEncoder is available
+        if 'LabelEncoder' not in globals():
+            from sklearn.preprocessing import LabelEncoder
             
-        if not os.path.exists('Model/tuned_lr_model.pkl'):
-            st.error("Linear Regression model file not found")
-            return None
-
-        # Load models with explicit numpy import
-        import numpy as np
-        import pickle
+        df = pd.read_csv("Data/cleaned_KL_data.csv")
         
-        # Load XGBoost model
-        with open('Model/tuned_xgboost_model.pkl', 'rb') as file:
-            xgb_artifacts = pickle.load(file)
-            
-        # Load Linear Regression model
-        with open('Model/tuned_lr_model.pkl', 'rb') as file:
-            lr_artifacts = pickle.load(file)
-        
-        return {
-            'xgboost': {
-                'model': xgb_artifacts['model'],
-                'encoders': xgb_artifacts['encoders']
-            },
-            'linear_regression': {
-                'model': lr_artifacts['model'],
-                'encoders': lr_artifacts['encoders'],
-                'scaler': lr_artifacts['scaler']
-            }
+        # Train model for default dataset
+        encoders = {
+            'location': LabelEncoder(),
+            'property_type': LabelEncoder(),
+            'furnished': LabelEncoder()
         }
+        
+        # Create a copy for modeling
+        model_df = df.copy()
+        
+        # Encode categorical variables
+        for column, encoder in encoders.items():
+            model_df[f'{column}_encoded'] = encoder.fit_transform(model_df[column])
+        
+        return df
+        
     except Exception as e:
-        st.error(f"Error loading models: {str(e)}")
-        import os
+        st.error(f"Error loading default dataset: {str(e)}")
         st.write("Debug information:")
+        import os
         st.write("Current directory:", os.getcwd())
         st.write("Available files:", os.listdir())
         return None
