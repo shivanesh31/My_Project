@@ -1,4 +1,4 @@
-pip install requirement.txt
+! pip install requirement.txt
 
 
 def load_data():
