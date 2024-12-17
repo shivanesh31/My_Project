@@ -1127,14 +1127,39 @@ def add_rental_suggestions(df):
 def load_all_models():
     """Load all three saved models and their artifacts"""
     try:
+        st.write("Starting model loading...")
+        
+        # Try importing required packages first
+        try:
+            import numpy as np
+            import pickle5 as pickle  # Use pickle5 instead
+            st.write("Required packages imported successfully")
+        except ImportError:
+            try:
+                import pickle  # Fallback to regular pickle
+                st.write("Using standard pickle")
+            except Exception as e:
+                st.error(f"Pickle import error: {str(e)}")
+                return None
+
         # Load XGBoost model
-        with open('Model/tuned_xgboost_model.pkl', 'rb') as file:
-            xgb_artifacts = pickle.load(file)
-        
+        try:
+            with open('Model/tuned_xgboost_model.pkl', 'rb') as file:
+                xgb_artifacts = pickle.load(file)
+                st.write("XGBoost model loaded")
+        except Exception as e:
+            st.error(f"Error loading XGBoost model: {str(e)}")
+            return None
+
         # Load Linear Regression model
-        with open('Model/tuned_lr_model.pkl', 'rb') as file:
-            lr_artifacts = pickle.load(file)
-        
+        try:
+            with open('Model/tuned_lr_model.pkl', 'rb') as file:
+                lr_artifacts = pickle.load(file)
+                st.write("Linear Regression model loaded")
+        except Exception as e:
+            st.error(f"Error loading Linear Regression model: {str(e)}")
+            return None
+
         return {
             'xgboost': {
                 'model': xgb_artifacts['model'],
@@ -1151,9 +1176,12 @@ def load_all_models():
         import os
         st.write("Debug information:")
         st.write("Current directory:", os.getcwd())
-        st.write("Available files:", os.listdir())
+        try:
+            st.write("Available files:", os.listdir('Model'))
+        except:
+            st.write("Could not access Model directory")
         return None
-
+        
 def load_default_dataset():
     """Load the default KL dataset and train model"""
     try:
