@@ -1,26 +1,14 @@
 import streamlit as st
-
-# Add version checks
-try:
-    import numpy as np
-    st.write(f"NumPy version: {np.__version__}")
-    
-    import pandas as pd
-    st.write(f"Pandas version: {pd.__version__}")
-    
-    from sklearn.preprocessing import LabelEncoder
-    import sklearn
-    st.write(f"Scikit-learn version: {sklearn.__version__}")
-    
-except Exception as e:
-    st.error(f"Import error: {str(e)}")
-try:
-    from sklearn.preprocessing import LabelEncoder
-except ImportError:
-    st.error("Failed to import sklearn. Installing...")
-    import pip
-    pip.main(['install', 'scikit-learn==1.0.2'])
-    from sklearn.preprocessing import LabelEncoder
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+import xgboost as xgb
+import pickle
+from sklearn.metrics import mean_squared_error, r2_score
 
 def load_data():
     """Load the rental dataset"""
