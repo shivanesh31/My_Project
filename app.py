@@ -1,17 +1,15 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import sys 
-st.write("Starting package imports...")
-st.write("Python version:", sys.version)
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+import xgboost as xgb
+import pickle
 
-try:
-    st.write("Attempting to import scikit-learn...")
-    from sklearn.model_selection import train_test_split
-    from sklearn.preprocessing import LabelEncoder
-    st.write("scikit-learn imported successfully!")
-except Exception as e:
-    st.error(f"Error importing scikit-learn: {str(e)}")
+
 def load_data():
     """Load the rental dataset"""
     try:
@@ -20,6 +18,9 @@ def load_data():
         return df
     except Exception as e:
         st.error(f"Error loading data: {str(e)}")
+        import os
+        st.write("Current directory:", os.getcwd())
+        st.write("Available files:", os.listdir())
         st.stop()
         
 def predict_price(features, xgb_model, encoders):
@@ -1123,7 +1124,6 @@ def load_all_models():
             'xgboost': {
                 'model': xgb_artifacts['model'],
                 'encoders': xgb_artifacts['encoders']
-            
             },
             'linear_regression': {
                 'model': lr_artifacts['model'],
@@ -1133,6 +1133,10 @@ def load_all_models():
         }
     except Exception as e:
         st.error(f"Error loading models: {str(e)}")
+        import os
+        st.write("Debug information:")
+        st.write("Current directory:", os.getcwd())
+        st.write("Available files:", os.listdir())
         return None
 
 def load_default_dataset():
