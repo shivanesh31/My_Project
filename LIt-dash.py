@@ -1266,6 +1266,22 @@ def add_model_comparison():
     - Random Forest performs similarly well, showing robust prediction capability
     - Linear Regression shows higher errors, indicating rental prices have non-linear relationships with features
     """)
+def load_all_models():
+    """Load all three saved models and their artifacts"""
+    try:
+        # Load XGBoost model
+        with open('Model/tuned_xgboost_model.pkl', 'rb') as file:
+            xgb_artifacts = pickle.load(file)
+        
+        return {
+            'xgboost': {
+                'model': xgb_artifacts['model'],
+                'encoders': xgb_artifacts['encoders']
+            }
+        }
+    except Exception as e:
+        st.error(f"Error loading models: {str(e)}")
+        return None
 
 def main():
     try:
@@ -1286,7 +1302,10 @@ def main():
         # Get dataset from session state
         df = st.session_state['df']
         # Load data once
-        
+        models = load_all_models()
+        if models is None:
+            st.error("Failed to load models")
+            return
         
         # Load model and encoders
         # Calculate location statistics for predictions
@@ -1301,7 +1320,7 @@ def main():
             features = create_feature_inputs()
             
             if st.button("Predict Rental Price", type="primary"):
-                result = predict_price(features, model['xgboost']['model'], model['xgboost']['encoders'])
+                result = predict_price(features, models['xgboost']['model'], models['xgboost']['encoders'])
                 
                 if result is not None:
                     prediction = result['prediction']
