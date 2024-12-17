@@ -1,15 +1,15 @@
-import pickle
-import gzip
-from sklearn.ensemble import RandomForestRegressor
+import streamlit as st
+import pandas as pd
+import numpy as np
 
-# Load the model
-with open("C:\\Users\\User\\.jupyter\\Dash31\\tuned_rf_model.pkl", 'rb') as f:
-    model = pickle.load(f)
+st.title("Rental Market Analysis")
 
-# Compress the model
-with gzip.open('compressed_rf_model.pkl.gz', 'wb') as f:
-    pickle.dump(model, f, protocol=pickle.HIGHEST_PROTOCOL)
+# Basic test to show it's working
+st.write("App is running!")
 
-# Verify the compression worked by loading it
-with gzip.open('compressed_rf_model.pkl.gz', 'rb') as f:
-    loaded_model = pickle.load(f)
+# Try importing plotly with detailed error handling
+try:
+    import plotly
+    st.success(f"Plotly version {plotly.__version__} installed!")
+except Exception as e:
+    st.error(f"Plotly import error: {str(e)}")
