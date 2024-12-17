@@ -1301,7 +1301,7 @@ def main():
             features = create_feature_inputs()
             
             if st.button("Predict Rental Price", type="primary"):
-                result = predict_price(features, models['xgboost']['model'], models['xgboost']['encoders'])
+                result = predict_price(features, model['xgboost']['model'], model['xgboost']['encoders'])
                 
                 if result is not None:
                     prediction = result['prediction']
