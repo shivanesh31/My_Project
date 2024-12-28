@@ -1316,7 +1316,7 @@ def main():
 
         with tab2:
             st.title("🏠 Kuala Lumpur Rental Price Prediction")
-            st.text("Powered by XGBoost machine learning model with 73.67% accuracy")
+            st.write("Powered by XGBoost machine learning model with 73.67% accuracy")
             # Get user inputs
             features = create_feature_inputs()
             
