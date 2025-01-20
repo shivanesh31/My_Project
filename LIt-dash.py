@@ -762,6 +762,7 @@ def add_rental_market_analysis(df):
 
 def add_descriptive_analytics(df):
     """Add descriptive analytics visualizations with improved sizing and clarity"""
+    st.set_page_config(layout="wide")
     st.title("📊 Descriptive Analytics")
     
     # 1. Rent Distribution Analysis
