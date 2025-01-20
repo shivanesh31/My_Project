@@ -761,190 +761,112 @@ def add_rental_market_analysis(df):
     st.table(summary_stats)
 
 def add_descriptive_analytics(df):
-    """Add descriptive analytics visualizations with improved sizing and clarity"""
-    st.set_page_config(layout="wide")
-    st.title("📊 Descriptive Analytics")
+    """Add descriptive analytics visualizations in a single view"""
+    st.title("📊 Rental Market Analysis")
     
-    # 1. Rent Distribution Analysis
-    st.subheader("Rental Price Distribution Analysis")
-    
-    # Larger box plot for rent by location
-    fig_box = px.box(
-        df,
-        x='location',
-        y='monthly_rent',
-        title='Rent Distribution by Location',
-        height=600  # Increased height
-    )
-    fig_box.update_xaxes(tickangle=45)
-    fig_box.update_layout(
-        title_x=0.5,
-        margin=dict(t=60, b=80),  # Adjusted margins
-        showlegend=True,
-        xaxis_title="Location",
-        yaxis_title="Monthly Rent (RM)"
-    )
-    st.plotly_chart(fig_box, use_container_width=True)
-    
-    # Larger violin plot for rent by property type
-    fig_violin = px.violin(
-        df,
-        x='property_type',
-        y='monthly_rent',
-        title='Rent Distribution by Property Type',
-        height=600  # Increased height
-    )
-    fig_violin.update_xaxes(tickangle=45)
-    fig_violin.update_layout(
-        title_x=0.5,
-        margin=dict(t=60, b=80),
-        xaxis_title="Property Type",
-        yaxis_title="Monthly Rent (RM)"
-    )
-    st.plotly_chart(fig_violin, use_container_width=True)
-    
-    # 2. Property Type Analysis
-    st.subheader("Property Analysis")
+    # Create three columns for key metrics at the top
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Average Rent", f"RM {df['monthly_rent'].mean():,.0f}")
+    with col2:
+        st.metric("Most Common Property", df['property_type'].mode()[0])
+    with col3:
+        st.metric("Total Properties", f"{len(df):,}")
+
+    # Create two columns for main visualizations
     col1, col2 = st.columns(2)
     
     with col1:
-        # Property types bar chart
-        prop_counts = df['property_type'].value_counts().reset_index()
-        prop_counts.columns = ['Property Type', 'Count']
-        # Calculate percentage
-        prop_counts['Percentage'] = (prop_counts['Count'] / prop_counts['Count'].sum() * 100).round(1)
-        # Add percentage to display
-        prop_counts['Label'] = prop_counts.apply(lambda x: f"{x['Count']} ({x['Percentage']}%)", axis=1)
-        
-        fig_property = px.bar(
-            prop_counts,
-            x='Property Type',
-            y='Count',
-            text='Label',
-            title='Distribution of Property Types',
-            height=500,
-            color_discrete_sequence=['#1f77b4']
+        # Rent Distribution by Location (Top 15 locations)
+        location_avg = df.groupby('location')['monthly_rent'].mean().nlargest(15)
+        fig_location = px.bar(
+            x=location_avg.values,
+            y=location_avg.index,
+            orientation='h',
+            title='Top 15 Locations by Average Rent',
+            labels={'x': 'Average Rent (RM)', 'y': 'Location'}
         )
-        fig_property.update_layout(
-            title={
-                'text': 'Distribution of Property Types',
-                'y':0.95,
-                'x':0.5,
-                'xanchor': 'center',
-                'yanchor': 'top'
-            },
-            xaxis_title="Property Type",
-            yaxis_title="Number of Properties",
-            xaxis={'tickangle': 45},
-            margin=dict(t=80, b=120, l=40, r=40),
-            showlegend=False
+        fig_location.update_layout(
+            height=350,
+            margin=dict(l=0, r=0, t=30, b=0),
+            title_x=0.5
         )
-        fig_property.update_traces(
-            textposition='outside',
-            texttemplate='%{text}'
-        )
-        st.plotly_chart(fig_property, use_container_width=True)
-    
+        st.plotly_chart(fig_location, use_container_width=True)
+
     with col2:
-        # Furnished status pie chart
+        # Property Type and Rent Distribution
+        fig_box = px.box(
+            df,
+            x='property_type',
+            y='monthly_rent',
+            title='Rent Distribution by Property Type',
+            labels={'property_type': 'Property Type', 'monthly_rent': 'Monthly Rent (RM)'}
+        )
+        fig_box.update_layout(
+            height=350,
+            margin=dict(l=0, r=0, t=30, b=0),
+            title_x=0.5
+        )
+        fig_box.update_xaxes(tickangle=45)
+        st.plotly_chart(fig_box, use_container_width=True)
+
+    # Create three columns for the bottom row
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        # Furnished Status Distribution
         furn_counts = df['furnished'].value_counts()
         fig_furnished = px.pie(
             values=furn_counts.values,
             names=furn_counts.index,
-            title='Distribution of Furnished Status',
-            height=500,
-            color_discrete_sequence=['#1f77b4', '#ff7f0e', '#2ca02c']
+            title='Furnished Status Distribution',
+            height=300
         )
         fig_furnished.update_layout(
-            title={
-                'text': 'Distribution of Furnished Status',
-                'y':0.95,
-                'x':0.5,
-                'xanchor': 'center',
-                'yanchor': 'top'
-            },
-            legend={
-                'orientation': 'h',
-                'yanchor': 'bottom',
-                'y': -0.2,
-                'xanchor': 'center',
-                'x': 0.5
-            },
-            margin=dict(t=80, b=120, l=40, r=40)
+            title_x=0.5,
+            margin=dict(t=30, b=0),
+            showlegend=False
         )
         fig_furnished.update_traces(textposition='inside', textinfo='percent+label')
         st.plotly_chart(fig_furnished, use_container_width=True)
-    
-    # 3. Fixed Additional Features Analysis
-    st.subheader("Additional Features Analysis")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        # Convert boolean to string and create parking analysis
+
+    with col2:
+        # Parking Availability
         df['parking_status'] = df['parking'].apply(lambda x: 'Has Parking' if x == 1 or x == True else 'No Parking')
         parking_counts = df['parking_status'].value_counts()
-        
         fig_parking = px.pie(
-            names=parking_counts.index,
             values=parking_counts.values,
+            names=parking_counts.index,
             title='Parking Availability',
-            height=500,
-            color_discrete_sequence=['#1f77b4', '#ff7f0e']
+            height=300
         )
         fig_parking.update_layout(
             title_x=0.5,
-            margin=dict(t=60, b=60),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+            margin=dict(t=30, b=0),
+            showlegend=False
         )
         fig_parking.update_traces(textposition='inside', textinfo='percent+label')
         st.plotly_chart(fig_parking, use_container_width=True)
-    
-    with col2:
-        # Convert boolean to string and create KTM/LRT analysis
+
+    with col3:
+        # Public Transport Proximity
         df['ktm_status'] = df['additional_near_ktm/lrt'].apply(
             lambda x: 'Near KTM/LRT' if x == 1 or x == True else 'Not Near KTM/LRT'
         )
         ktm_counts = df['ktm_status'].value_counts()
-        
         fig_ktm = px.pie(
-            names=ktm_counts.index,
             values=ktm_counts.values,
-            title='Proximity to Public Transport (KTM/LRT)',
-            height=500,
-            color_discrete_sequence=['#1f77b4', '#ff7f0e']
+            names=ktm_counts.index,
+            title='Public Transport Proximity',
+            height=300
         )
         fig_ktm.update_layout(
             title_x=0.5,
-            margin=dict(t=60, b=60),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+            margin=dict(t=30, b=0),
+            showlegend=False
         )
         fig_ktm.update_traces(textposition='inside', textinfo='percent+label')
         st.plotly_chart(fig_ktm, use_container_width=True)
-    
-    # 4. Summary Statistics
-    st.subheader("Market Summary")
-    summary_stats = pd.DataFrame({
-        'Metric': [
-            'Total Properties',
-            'Average Monthly Rent',
-            'Median Monthly Rent',
-            'Most Common Property Type',
-            'Fully Furnished Properties',
-            'Properties with Parking',
-            'Properties Near KTM/LRT'
-        ],
-        'Value': [
-            f"{len(df):,}",
-            f"RM {df['monthly_rent'].mean():,.2f}",
-            f"RM {df['monthly_rent'].median():,.2f}",
-            f"{df['property_type'].mode()[0]} ({(df['property_type'].value_counts().iloc[0]/len(df)*100):.1f}%)",
-            f"{(df['furnished']=='Fully Furnished').sum()/len(df)*100:.1f}%",
-            f"{(df['parking']==True).sum()/len(df)*100:.1f}%",
-            f"{(df['additional_near_ktm/lrt']==True).sum()/len(df)*100:.1f}%"
-        ]
-    })
-    
-    st.table(summary_stats)
 
 def add_rental_suggestions(df):
     """Add rental suggestions based on user preferences"""
