@@ -761,113 +761,127 @@ def add_rental_market_analysis(df):
     st.table(summary_stats)
 
 def add_descriptive_analytics(df):
-    """Add descriptive analytics visualizations in a single view"""
-    st.title("📊 Rental Market Analysis")
+    """Add descriptive analytics visualizations in a single view with location filter"""
     
-    # Create three columns for key metrics at the top
+    # Location filter
+    all_locations = ['All Locations'] + sorted(df['location'].unique().tolist())
+    selected_location = st.selectbox('📍 Select Location', all_locations)
+    
+    # Filter data based on location selection
+    if selected_location != 'All Locations':
+        filtered_df = df[df['location'] == selected_location]
+    else:
+        filtered_df = df
+        
+    # Adjust chart heights for single view
+    chart_height = 250  # Reduced height
+
+    # Title and metrics row
     col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("Average Rent", f"RM {df['monthly_rent'].mean():,.0f}")
-    with col2:
-        st.metric("Most Common Property", df['property_type'].mode()[0])
-    with col3:
-        st.metric("Total Properties", f"{len(df):,}")
-
-    # Create two columns for main visualizations
-    col1, col2 = st.columns(2)
     
     with col1:
-        # Rent Distribution by Location (Top 15 locations)
-        location_avg = df.groupby('location')['monthly_rent'].mean().nlargest(15)
-        fig_location = px.bar(
-            x=location_avg.values,
-            y=location_avg.index,
-            orientation='h',
-            title='Top 15 Locations by Average Rent',
-            labels={'x': 'Average Rent (RM)', 'y': 'Location'}
+        st.metric("Average Rent", 
+                 f"RM {filtered_df['monthly_rent'].mean():,.0f}",
+                 f"{len(filtered_df)} properties")
+    with col2:
+        property_counts = filtered_df['property_type'].value_counts()
+        st.metric("Most Common Property", 
+                 f"{property_counts.index[0]}",
+                 f"{property_counts.iloc[0]} units")
+    with col3:
+        furnished_counts = filtered_df['furnished'].value_counts()
+        st.metric("Furnished Status",
+                 f"{furnished_counts.index[0]}",
+                 f"{furnished_counts.iloc[0]} units")
+
+    # Create two columns for main charts
+    col1, col2 = st.columns([0.4, 0.6])
+
+    with col1:
+        # Property Type Distribution
+        prop_counts = filtered_df['property_type'].value_counts()
+        fig_property = px.pie(
+            values=prop_counts.values,
+            names=prop_counts.index,
+            title='Property Types',
+            height=chart_height
         )
-        fig_location.update_layout(
-            height=350,
+        fig_property.update_layout(
             margin=dict(l=0, r=0, t=30, b=0),
-            title_x=0.5
+            showlegend=True,
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=-0.2,
+                xanchor="center",
+                x=0.5
+            )
         )
-        st.plotly_chart(fig_location, use_container_width=True)
+        fig_property.update_traces(textposition='inside', textinfo='percent+label')
+        st.plotly_chart(fig_property, use_container_width=True)
 
     with col2:
-        # Property Type and Rent Distribution
+        # Rent Distribution by Property Type
         fig_box = px.box(
-            df,
+            filtered_df,
             x='property_type',
             y='monthly_rent',
             title='Rent Distribution by Property Type',
-            labels={'property_type': 'Property Type', 'monthly_rent': 'Monthly Rent (RM)'}
+            height=chart_height
         )
         fig_box.update_layout(
-            height=350,
             margin=dict(l=0, r=0, t=30, b=0),
-            title_x=0.5
+            xaxis_tickangle=45
         )
-        fig_box.update_xaxes(tickangle=45)
         st.plotly_chart(fig_box, use_container_width=True)
 
-    # Create three columns for the bottom row
+    # Create three columns for additional info
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        # Furnished Status Distribution
-        furn_counts = df['furnished'].value_counts()
-        fig_furnished = px.pie(
-            values=furn_counts.values,
-            names=furn_counts.index,
-            title='Furnished Status Distribution',
-            height=300
+        transport_counts = filtered_df['additional_near_ktm/lrt'].map({True: 'Near KTM/LRT', False: 'No KTM/LRT'}).value_counts()
+        fig_transport = px.pie(
+            values=transport_counts.values,
+            names=transport_counts.index,
+            title='Public Transport Access',
+            height=chart_height-50
         )
-        fig_furnished.update_layout(
-            title_x=0.5,
-            margin=dict(t=30, b=0),
+        fig_transport.update_layout(
+            margin=dict(l=0, r=0, t=30, b=0),
             showlegend=False
         )
-        fig_furnished.update_traces(textposition='inside', textinfo='percent+label')
-        st.plotly_chart(fig_furnished, use_container_width=True)
+        fig_transport.update_traces(textposition='inside', textinfo='percent+label')
+        st.plotly_chart(fig_transport, use_container_width=True)
 
     with col2:
-        # Parking Availability
-        df['parking_status'] = df['parking'].apply(lambda x: 'Has Parking' if x == 1 or x == True else 'No Parking')
-        parking_counts = df['parking_status'].value_counts()
+        parking_counts = filtered_df['parking'].map({True: 'Has Parking', False: 'No Parking'}).value_counts()
         fig_parking = px.pie(
             values=parking_counts.values,
             names=parking_counts.index,
             title='Parking Availability',
-            height=300
+            height=chart_height-50
         )
         fig_parking.update_layout(
-            title_x=0.5,
-            margin=dict(t=30, b=0),
+            margin=dict(l=0, r=0, t=30, b=0),
             showlegend=False
         )
         fig_parking.update_traces(textposition='inside', textinfo='percent+label')
         st.plotly_chart(fig_parking, use_container_width=True)
 
     with col3:
-        # Public Transport Proximity
-        df['ktm_status'] = df['additional_near_ktm/lrt'].apply(
-            lambda x: 'Near KTM/LRT' if x == 1 or x == True else 'Not Near KTM/LRT'
+        furnished_counts = filtered_df['furnished'].value_counts()
+        fig_furnished = px.pie(
+            values=furnished_counts.values,
+            names=furnished_counts.index,
+            title='Furnished Status',
+            height=chart_height-50
         )
-        ktm_counts = df['ktm_status'].value_counts()
-        fig_ktm = px.pie(
-            values=ktm_counts.values,
-            names=ktm_counts.index,
-            title='Public Transport Proximity',
-            height=300
-        )
-        fig_ktm.update_layout(
-            title_x=0.5,
-            margin=dict(t=30, b=0),
+        fig_furnished.update_layout(
+            margin=dict(l=0, r=0, t=30, b=0),
             showlegend=False
         )
-        fig_ktm.update_traces(textposition='inside', textinfo='percent+label')
-        st.plotly_chart(fig_ktm, use_container_width=True)
-
+        fig_furnished.update_traces(textposition='inside', textinfo='percent+label')
+        st.plotly_chart(fig_furnished, use_container_width=True)
 def add_rental_suggestions(df):
     """Add rental suggestions based on user preferences"""
     st.title("🏠 Kuala Lumpur Rental Property Finder")
