@@ -13,12 +13,29 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 st.set_page_config(layout="wide")
 
-try:
-    df = pd.read_csv("data/cleaned_KL_data.csv")  # If the CSV is in the same directory as your script
-except FileNotFoundError:
-    st.error("Please ensure cleaned_KL_data.csv is in the same directory as this script.")
-    st.stop()
+@st.cache_data
+def load_data():
+    try:
+        data_path = os.path.join('data', 'cleaned_KL_data.csv')
+        df = pd.read_csv(data_path)
+        return df
+    except FileNotFoundError:
+        st.error("Data file not found. Please ensure 'cleaned_KL_data.csv' exists in the data directory.")
+        return None
+    except Exception as e:
+        st.error(f"Error loading data: {str(e)}")
+        return None
 
+# Initialize session state
+if 'df' not in st.session_state:
+    df = load_data()
+    if df is not None:
+        st.session_state['df'] = df
+    else:
+        st.stop()
+
+# Get dataframe from session state
+df = st.session_state['df']
 def descriptive_analytics(df):
     # Custom CSS for metric boxes
     st.markdown("""
@@ -764,8 +781,9 @@ def add_model_comparison():
 def load_all_models():
     """Load all three saved models and their artifacts"""
     try:
-        # Load XGBoost model
-        with open("model/tuned_xgboost_model.pkl", 'rb') as file:  # Changed path
+        # Load XGBoost model from the model directory
+        model_path = os.path.join('model', 'tuned_xgboost_model.pkl')
+        with open(model_path, 'rb') as file:
             xgb_artifacts = pickle.load(file)
         
         return {
@@ -774,8 +792,12 @@ def load_all_models():
                 'encoders': xgb_artifacts['encoders']
             }
         }
+    except FileNotFoundError:
+        st.error("Model file not found. Please ensure 'tuned_xgboost_model.pkl' is in the model directory.")
+        return None
     except Exception as e:
         st.error(f"Error loading models: {str(e)}")
+        st.write("Debug info:", str(e))
         return None
 
 def main():
