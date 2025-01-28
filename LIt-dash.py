@@ -129,7 +129,7 @@ def descriptive_analytics(df):
             yaxis_title="Number of Properties",
             showlegend=False,
             plot_bgcolor='white',
-            font=dict(weight='bold'),
+            font=dict(size=14, color='black'),
             title_font_size=14
         )
         st.plotly_chart(fig_dist, use_container_width=True)
@@ -149,7 +149,7 @@ def descriptive_analytics(df):
             height=300,
             margin=dict(l=0, r=0, t=30, b=0),
             showlegend=False,
-            font=dict(weight='bold'),
+            font=dict(size=14, color='black'),
             title_font_size=14
         )
         st.plotly_chart(fig_prop, use_container_width=True)
@@ -171,7 +171,7 @@ def descriptive_analytics(df):
             height=300,
             margin=dict(l=0, r=0, t=30, b=0),
             plot_bgcolor='white',
-            font=dict(weight='bold'),
+            font=dict(size=14, color='black'),
             title_font_size=14,
             showlegend=False,
             xaxis=dict(tickfont=dict(weight='bold')),
@@ -206,7 +206,7 @@ def descriptive_analytics(df):
             plot_bgcolor='white',
             bargap=0.2,  # Reduced gap between bars
             coloraxis_showscale=False,
-            font=dict(weight='bold'),
+            font=dict(size=14, color='black'),
             xaxis=dict(tickfont=dict(weight='bold')),
             yaxis=dict(tickfont=dict(weight='bold')),
             title=dict(font=dict(weight='bold'))
@@ -234,7 +234,7 @@ def descriptive_analytics(df):
             plot_bgcolor='white',
             bargap=0.2,
             coloraxis_showscale=False,
-            font=dict(weight='bold'),
+            font=dict(size=14, color='black'),
             xaxis=dict(tickfont=dict(weight='bold')),
             yaxis=dict(tickfont=dict(weight='bold')),
             title=dict(font=dict(weight='bold'))
