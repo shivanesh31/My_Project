@@ -13,7 +13,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 
 st.set_page_config(layout="wide")
-df = pd.read_csv(os.path.join('data', 'cleaned_KL_data.csv'))
+
 @st.cache_data
 def load_data():
     try:
