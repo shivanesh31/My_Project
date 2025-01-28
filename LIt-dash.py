@@ -105,79 +105,46 @@ def descriptive_analytics(df):
     # Charts
     row1_col1, row1_col2, row1_col3 = st.columns([1.5, 1.5, 1])
 
-    with row1_col1:
-        # Rental Price Distribution
-        rent_bins = pd.cut(filtered_df['monthly_rent'], bins=15)
-        rent_dist = rent_bins.value_counts().sort_index()
+    fig_prop = go.Figure(data=[go.Pie(
+    labels=['Apartment', 'House', 'Condo'],  # Example labels
+    values=[40, 30, 30],                    # Example values
+    hole=0.4,
+    textinfo='percent+label',
+    marker=dict(colors=['#00796B', '#0288D1', '#FFC107'])
+)])
+fig_prop.update_layout(
+    title='Property Type Distribution',
+    height=300,
+    margin=dict(l=0, r=0, t=30, b=0),
+    showlegend=False,
+    font=dict(size=14, color='black'),  # Corrected font
+    title_font_size=14
+)
 
-        fig_dist = go.Figure()
-        fig_dist.add_trace(go.Scatter(
-            x=[interval.mid for interval in rent_dist.index],
-            y=rent_dist.values,
-            mode='lines+markers',
-            line=dict(color=colors['primary'], width=2),
-            fill='tozeroy',
-            fillcolor='rgba(0, 121, 107, 0.2)',
-            name='Count'
-        ))
+# Scatter plot for Property Size vs Monthly Rent
+fig_scatter = px.scatter(
+    df,
+    x='size',
+    y='monthly_rent',
+    color='property_type',
+    color_discrete_sequence=['#00796B', '#0288D1', '#FFC107'],
+    title='Property Size vs Monthly Rent',
+    labels={'size': 'Size (sq.ft)', 'monthly_rent': 'Monthly Rent (RM)'},
+    hover_data=['location']
+)
+fig_scatter.update_layout(
+    height=300,
+    margin=dict(l=0, r=0, t=30, b=0),
+    plot_bgcolor='white',
+    font=dict(size=14, color='black'),  # Corrected font
+    title_font_size=14,
+    showlegend=True
+)
 
-        fig_dist.update_layout(
-            title='Rental Price Distribution',
-            height=300,
-            margin=dict(l=0, r=0, t=30, b=0),
-            xaxis_title="Monthly Rent (RM)",
-            yaxis_title="Number of Properties",
-            showlegend=False,
-            plot_bgcolor='white',
-            font=dict(size=14, color='black'),
-            title_font_size=14
-        )
-        st.plotly_chart(fig_dist, use_container_width=True)
-
-    with row1_col2:
-        # Property Type Distribution (Pie Chart)
-        prop_counts = filtered_df['property_type'].value_counts()
-        fig_prop = go.Figure(data=[go.Pie(
-            labels=prop_counts.index,
-            values=prop_counts.values,
-            hole=0.4,
-            textinfo='percent+label',
-            marker=dict(colors=[colors['primary'], colors['secondary'], colors['tertiary']])
-        )])
-        fig_prop.update_layout(
-            title='Property Type Distribution',
-            height=300,
-            margin=dict(l=0, r=0, t=30, b=0),
-            showlegend=False,
-            font=dict(size=14, color='black'),
-            title_font_size=14
-        )
-        st.plotly_chart(fig_prop, use_container_width=True)
-
-    with row1_col3:
-        # Scatter plot for Property Type vs Average Rent
-        fig_scatter = px.scatter(
-            filtered_df,
-            x='size',
-            y='monthly_rent',
-            color='property_type',
-            color_discrete_sequence=[colors['primary'], colors['secondary'], colors['tertiary']],
-            title='Property Size vs Monthly Rent',
-            labels={'size': 'Size (sq.ft)', 'monthly_rent': 'Monthly Rent (RM)'},
-            hover_data=['location']
-        )
-
-        fig_scatter.update_layout(
-            height=300,
-            margin=dict(l=0, r=0, t=30, b=0),
-            plot_bgcolor='white',
-            font=dict(size=14, color='black'),
-            title_font_size=14,
-            showlegend=False,
-            xaxis=dict(tickfont=dict(weight='bold')),
-            yaxis=dict(tickfont=dict(weight='bold'))
-        )
-        st.plotly_chart(fig_scatter, use_container_width=True)
+# Display the charts
+st.plotly_chart(fig_dist, use_container_width=True)
+st.plotly_chart(fig_prop, use_container_width=True)
+st.plotly_chart(fig_scatter, use_container_width=True)
 
     # Second row of charts
     row2_col1, row2_col2 = st.columns(2)
@@ -240,6 +207,8 @@ def descriptive_analytics(df):
             title=dict(font=dict(weight='bold'))
         )
         st.plotly_chart(fig_fac, use_container_width=True)
+        st.plotly_chart(fig_prop, use_container_width=True)
+        st.plotly_chart(fig_scatter, use_container_width=True)
 
 
 # L
