@@ -195,34 +195,54 @@ def descriptive_analytics(df):
         )
         st.plotly_chart(fig_avg, use_container_width=True)
 
-    with row2_col2:
-        cols = ['parking', 'additional_near_ktm/lrt']
-        facilities = filtered_df[cols].mean() * 100
-        # Sort values for gradient effect
-        facilities = facilities.sort_values(ascending=True)
-        
-        fig_fac = px.bar(
-            x=facilities.index, 
-            y=facilities.values,
-            title='Facilities Available (%)',
-            labels={'x': 'Facility', 'y': 'Percentage'},
-            color=facilities.values,
-            color_continuous_scale=['#b7e4d9', '#00796B'],
-            width=600
+   # For the "Facilities Available" chart
+with row2_col2:
+    # Proper calculation of facilities percentages
+    parking_available = (filtered_df['parking'] == 1).sum()
+    parking_percentage = (parking_available / len(filtered_df)) * 100
+    
+    ktm_available = (filtered_df['additional_near_ktm/lrt'] == 1).sum()
+    ktm_percentage = (ktm_available / len(filtered_df)) * 100
+    
+    # Create DataFrame for the facilities chart
+    facilities_data = pd.DataFrame({
+        'Facility': ['Parking', 'Near KTM/LRT'],
+        'Percentage': [parking_percentage, ktm_percentage]
+    })
+    
+    # Create the bar chart
+    fig_fac = px.bar(
+        facilities_data,
+        x='Facility', 
+        y='Percentage',
+        title='Facilities Available (%)',
+        color_discrete_sequence=['#ba68c8'],
+        width=600
+    )
+    
+    fig_fac.update_layout(
+        height=300, 
+        margin=dict(l=0, r=0, t=30, b=0),
+        plot_bgcolor='white',
+        bargap=0.7,
+        yaxis_range=[0, 100],  # Set y-axis to go from 0 to 100%
+        font=dict(
+            size=12,
+            family="Arial"
         )
-        fig_fac.update_layout(
-            height=300,
-            margin=dict(l=0, r=0, t=30, b=0),
-            plot_bgcolor='white',
-            bargap=0.2,
-            coloraxis_showscale=False,
-            font=dict(weight='bold'),
-            xaxis=dict(tickfont=dict(weight='bold')),
-            yaxis=dict(tickfont=dict(weight='bold')),
-            title=dict(font=dict(weight='bold'))
+    )
+    
+    # Add percentage labels on top of bars
+    fig_fac.update_traces(
+        text=[f"{val:.1f}%" for val in facilities_data['Percentage']],
+        textposition='outside',
+        textfont=dict(
+            size=12,
+            family="Arial"
         )
-        st.plotly_chart(fig_fac, use_container_width=True)
-
+    )
+    
+    st.plotly_chart(fig_fac, use_container_width=True)
 
 # L
 
