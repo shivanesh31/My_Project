@@ -10,14 +10,18 @@ import xgboost as xgb
 import pickle
 from sklearn.metrics import mean_squared_error, r2_score
 
-import streamlit as st
-import plotly.express as px
-import plotly.graph_objects as go
-import pandas as pd
-import numpy as np
 
 st.set_page_config(layout="wide")
-df = pd.read_csv('data/cleaned_KL_data.csv')
+
+try:
+    # Using os.path.join for cross-platform compatibility
+    data_path = os.path.join('data', 'cleaned_KL_data.csv')
+    df = pd.read_csv(data_path)
+    create_dashboard(df)
+except FileNotFoundError:
+    st.error("Data file not found. Please make sure 'cleaned_KL_data.csv' is in the data directory.")
+except Exception as e:
+    st.error(f"An error occurred: {str(e)}")
 
 def descriptive_analytics(df):
     # Custom CSS for metric boxes
