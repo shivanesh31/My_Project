@@ -14,14 +14,10 @@ from sklearn.metrics import mean_squared_error, r2_score
 st.set_page_config(layout="wide")
 
 try:
-    # Using os.path.join for cross-platform compatibility
-    data_path = os.path.join('data', 'cleaned_KL_data.csv')
-    df = pd.read_csv(data_path)
-    create_dashboard(df)
+    df = pd.read_csv("data/cleaned_KL_data.csv")  # If the CSV is in the same directory as your script
 except FileNotFoundError:
-    st.error("Data file not found. Please make sure 'cleaned_KL_data.csv' is in the data directory.")
-except Exception as e:
-    st.error(f"An error occurred: {str(e)}")
+    st.error("Please ensure cleaned_KL_data.csv is in the same directory as this script.")
+    st.stop()
 
 def descriptive_analytics(df):
     # Custom CSS for metric boxes
@@ -769,7 +765,7 @@ def load_all_models():
     """Load all three saved models and their artifacts"""
     try:
         # Load XGBoost model
-        with open('model/tuned_xgboost_model.pkl', 'rb') as file:
+        with open("model/tuned_xgboost_model.pkl", 'rb') as file:  # Changed path
             xgb_artifacts = pickle.load(file)
         
         return {
