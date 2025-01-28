@@ -17,7 +17,7 @@ import pandas as pd
 import numpy as np
 
 st.set_page_config(layout="wide")
-df = pd.read_csv(r"C:\Users\User\Downloads\cleaned_KL_data.csv")
+df = pd.read_csv('data/cleaned_KL_data.csv')
 
 def descriptive_analytics(df):
     # Custom CSS for metric boxes
@@ -728,7 +728,7 @@ def add_rental_suggestions(df):
 def load_default_dataset():
     """Load the default KL dataset and train model"""
     try:
-        df = pd.read_csv(r"C:\Users\User\Downloads\cleaned_KL_data.csv")
+        df = pd.read_csv('data/cleaned_KL_data.csv')
         
         # Train model for default dataset
         encoders = {
@@ -893,7 +893,7 @@ def load_all_models():
     """Load all three saved models and their artifacts"""
     try:
         # Load XGBoost model
-        with open("C:\\Users\\User\\.jupyter\\Dash31\\tuned_xgboost_model.pkl", 'rb') as file:
+        with open('model/tuned_xgboost_model.pkl', 'rb') as file:
             xgb_artifacts = pickle.load(file)
         
         return {
