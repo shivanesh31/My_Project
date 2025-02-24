@@ -106,7 +106,7 @@ def descriptive_analytics(df):
     # CHARTS ROW 1
     row1_col1, row1_col2, row1_col3 = st.columns([1.5, 1.5, 1])
 
-    # -- PIE CHART (Property Type Distribution)
+    # 1) PIE CHART (Property Type Distribution)
     with row1_col1:
         fig_prop = go.Figure(data=[go.Pie(
             labels=['Apartment', 'House', 'Condo'],  # Example labels
@@ -125,10 +125,10 @@ def descriptive_analytics(df):
         )
         st.plotly_chart(fig_prop, use_container_width=True)
 
-    # -- SCATTER PLOT (Size vs Monthly Rent)
+    # 2) SCATTER PLOT (Size vs Monthly Rent)
     with row1_col2:
         fig_scatter = px.scatter(
-            filtered_df,  # use filtered_df so it matches selected location
+            filtered_df,
             x='size',
             y='monthly_rent',
             color='property_type',
@@ -147,12 +147,39 @@ def descriptive_analytics(df):
         )
         st.plotly_chart(fig_scatter, use_container_width=True)
 
-    # You can leave row1_col3 for something else, or keep it empty
+    # 3) LINE PLOT (Rental Price Distribution)
+    with row1_col3:
+        rent_bins = pd.cut(filtered_df['monthly_rent'], bins=15)
+        rent_dist = rent_bins.value_counts().sort_index()
+
+        fig_dist = go.Figure()
+        fig_dist.add_trace(go.Scatter(
+            x=[interval.mid for interval in rent_dist.index],
+            y=rent_dist.values,
+            mode='lines+markers',
+            line=dict(color=colors['primary'], width=2),
+            fill='tozeroy',
+            fillcolor='rgba(0, 121, 107, 0.2)',
+            name='Count'
+        ))
+
+        fig_dist.update_layout(
+            title='Rental Price Distribution',
+            height=300,
+            margin=dict(l=0, r=0, t=30, b=0),
+            xaxis_title="Monthly Rent (RM)",
+            yaxis_title="Number of Properties",
+            showlegend=False,
+            plot_bgcolor='white',
+            font=dict(size=14, color='black'),
+            title_font_size=14
+        )
+        st.plotly_chart(fig_dist, use_container_width=True)
 
     # CHARTS ROW 2
     row2_col1, row2_col2 = st.columns(2)
 
-    # -- BAR CHART (Average Rent by Property Type)
+    # 4) BAR CHART (Average Rent by Property Type)
     with row2_col1:
         avg_rent = filtered_df.groupby('property_type')['monthly_rent'].mean().reset_index()
         # Sort values to apply gradient colors
@@ -178,7 +205,7 @@ def descriptive_analytics(df):
         )
         st.plotly_chart(fig_avg, use_container_width=True)
 
-    # -- BAR CHART (Facilities Available)
+    # 5) BAR CHART (Facilities Available)
     with row2_col2:
         cols = ['parking', 'additional_near_ktm/lrt']
         facilities = filtered_df[cols].mean() * 100
@@ -204,6 +231,7 @@ def descriptive_analytics(df):
             title_font_size=14
         )
         st.plotly_chart(fig_fac, use_container_width=True)
+
 
 
 def predict_price(features, xgb_model, encoders):
