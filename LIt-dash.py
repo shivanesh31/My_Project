@@ -107,7 +107,7 @@ def descriptive_analytics(df):
     
 
     with row1_col1:
-            fig_prop = go.Figure(data=[go.Pie(
+        fig_prop = go.Figure(data=[go.Pie(
             labels=['Apartment', 'House', 'Condo'],  # Example labels
             values=[40, 30, 30],                    # Example values
             hole=0.4,
@@ -121,7 +121,7 @@ def descriptive_analytics(df):
             showlegend=False,
             font=dict(size=14, color='black'),  # Corrected font
             title_font_size=14
-        )
+         )
         
         # Scatter plot for Property Size vs Monthly Rent
         fig_scatter = px.scatter(
