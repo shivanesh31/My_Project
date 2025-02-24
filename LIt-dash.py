@@ -144,7 +144,7 @@ def descriptive_analytics(df):
         )
         
         # Display the charts
-        st.plotly_chart(fig_dist, use_container_width=True)
+        st.plotly_chart(fig_prop, use_container_width=True)
         st.plotly_chart(fig_prop, use_container_width=True)
         st.plotly_chart(fig_scatter, use_container_width=True)
 
