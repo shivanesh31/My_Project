@@ -176,9 +176,9 @@ def descriptive_analytics(df):
             bargap=0.2,  # Reduced gap between bars
             coloraxis_showscale=False,
             font=dict(size=14, color='black'),
-            xaxis=dict(tickfont=dict(weight='bold')),
-            yaxis=dict(tickfont=dict(weight='bold')),
-            title=dict(font=dict(weight='bold'))
+            xaxis=dict(tickfont=dict(weight='Arial')),
+            yaxis=dict(tickfont=dict(weight='Arial')),
+            title=dict(font=dict(weight='Arial'))
         )
         st.plotly_chart(fig_avg, use_container_width=True)
 
@@ -204,9 +204,9 @@ def descriptive_analytics(df):
             bargap=0.2,
             coloraxis_showscale=False,
             font=dict(size=14, color='black'),
-            xaxis=dict(tickfont=dict(weight='bold')),
-            yaxis=dict(tickfont=dict(weight='bold')),
-            title=dict(font=dict(weight='bold'))
+            xaxis=dict(tickfont=dict(weight='Arial')),
+            yaxis=dict(tickfont=dict(weight='Arial')),
+            title=dict(font=dict(weight='Arial'))
         )
         st.plotly_chart(fig_fac, use_container_width=True)
         st.plotly_chart(fig_prop, use_container_width=True)
